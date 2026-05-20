@@ -50,6 +50,9 @@ namespace CyberBrass.Editor
             charController.radius = 0.5f;
 
             var playerController = player.AddComponent<PlayerController>();
+            
+            // Add targeting crosshair HUD component
+            player.AddComponent<CyberBrass.UI.Crosshair>();
 
             // Create Camera
             var camGo = new GameObject("PlayerCamera");
