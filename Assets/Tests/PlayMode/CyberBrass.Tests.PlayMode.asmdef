@@ -7,7 +7,7 @@
         "CyberBrass.Runtime",
         "Unity.InputSystem",
         "Unity.InputSystem.TestFramework",
-        "SQLite-net"
+        "Gilzoide.SqliteNet"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

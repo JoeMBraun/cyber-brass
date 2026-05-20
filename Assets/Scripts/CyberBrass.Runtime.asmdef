@@ -3,7 +3,7 @@
     "rootNamespace": "CyberBrass",
     "references": [
         "Unity.InputSystem",
-        "SQLite-net"
+        "Gilzoide.SqliteNet"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
