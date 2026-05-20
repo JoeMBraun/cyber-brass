@@ -110,10 +110,10 @@ namespace CyberBrass.Tests
 
             float groundedY = _playerObject.transform.position.y;
 
-            // Trigger jump input
-            Press(_keyboard.spaceKey);
+            // Trigger jump input (Left Shift key)
+            Press(_keyboard.leftShiftKey);
             yield return null; // process input frame
-            Release(_keyboard.spaceKey);
+            Release(_keyboard.leftShiftKey);
 
             // Wait a few frames for physics/movement processing
             yield return new WaitForSeconds(0.2f);
