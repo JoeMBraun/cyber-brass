@@ -38,6 +38,16 @@ namespace CyberBrass.Weapons
         [Tooltip("Spread angle multiplier representing projectile deviation.")]
         [SerializeField] private float spread = 0.05f;
 
+        [Header("Projectile Settings")]
+        [Tooltip("If true, fires a physical projectile instead of a hitscan raycast.")]
+        [SerializeField] private bool isProjectile = false;
+        [Tooltip("The projectile prefab to spawn.")]
+        [SerializeField] private GameObject projectilePrefab;
+        [Tooltip("Velocity speed of the spawned projectile.")]
+        [SerializeField] private float projectileSpeed = 30f;
+        [Tooltip("Gravity multiplier applied to the projectile (0 = straight path, 1 = normal gravity).")]
+        [SerializeField] private float gravityScale = 0f;
+
         [Header("Ammunition")]
         [Tooltip("Maximum amount of ammo in one magazine/cylinder.")]
         [SerializeField] private int magazineCapacity = 6;
@@ -65,6 +75,10 @@ namespace CyberBrass.Weapons
         public float ReloadTime => reloadTime;
         public GameObject WeaponModelPrefab => weaponModelPrefab;
         public GameObject MuzzleFlashPrefab => muzzleFlashPrefab;
+        public bool IsProjectile => isProjectile;
+        public GameObject ProjectilePrefab => projectilePrefab;
+        public float ProjectileSpeed => projectileSpeed;
+        public float GravityScale => gravityScale;
 
         #endregion
     }
@@ -157,12 +171,49 @@ namespace CyberBrass.Weapons
             Vector3 finalDirection = direction + Random.insideUnitSphere * weaponData.Spread;
             finalDirection.Normalize();
 
-            // Perform hitscan check
-            if (Physics.Raycast(origin, finalDirection, out RaycastHit hit, weaponData.Range))
+            // Spawn projectile or perform hitscan check
+            if (weaponData.IsProjectile)
             {
-                Debug.Log($"[WeaponInstance] Hit target: {hit.collider.gameObject.name} at distance {hit.distance}m");
-                
-                // TODO: Raise DamageEvent via Combat.DamageSystem
+                GameObject projGo;
+                if (weaponData.ProjectilePrefab != null)
+                {
+                    projGo = Instantiate(weaponData.ProjectilePrefab, origin, Quaternion.LookRotation(finalDirection));
+                }
+                else
+                {
+                    // Generate a beautiful, glowing orange-amber sphere fallback projectile programmatically
+                    projGo = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    projGo.name = "DynamicProjectile";
+                    projGo.transform.position = origin;
+                    projGo.transform.localScale = Vector3.one * 0.25f;
+                    
+                    // Remove collider so the script handles sweep collision detection
+                    Destroy(projGo.GetComponent<Collider>());
+
+                    var r = projGo.GetComponent<Renderer>();
+                    if (r != null)
+                    {
+                        r.sharedMaterial = new Material(Shader.Find("Standard"));
+                        r.sharedMaterial.color = new Color(1.0f, 0.7f, 0.1f);
+                    }
+                }
+
+                var projectileScript = projGo.GetComponent<CyberBrass.Combat.Projectile>();
+                if (projectileScript == null)
+                {
+                    projectileScript = projGo.AddComponent<CyberBrass.Combat.Projectile>();
+                }
+                projectileScript.Initialize(finalDirection * weaponData.ProjectileSpeed, weaponData.GravityScale, weaponData.Damage);
+            }
+            else
+            {
+                // Perform hitscan check
+                if (Physics.Raycast(origin, finalDirection, out RaycastHit hit, weaponData.Range))
+                {
+                    Debug.Log($"[WeaponInstance] Hit target: {hit.collider.gameObject.name} at distance {hit.distance}m");
+                    
+                    // TODO: Raise DamageEvent via Combat.DamageSystem
+                }
             }
         }
 

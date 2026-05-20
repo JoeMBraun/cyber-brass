@@ -65,30 +65,31 @@ namespace CyberBrass.Editor
             serializedPlayer.FindProperty("playerCamera").objectReferenceValue = camGo.transform;
             serializedPlayer.ApplyModifiedProperties();
             
-            // 4. Create default WeaponConfig asset
-            WeaponBase weaponConfig = AssetDatabase.LoadAssetAtPath<WeaponBase>("Assets/Settings/DefaultPistol.asset");
-            if (weaponConfig == null)
+            // 4. Create default WeaponConfig asset (Always recreate to ensure latest settings apply)
+            if (!AssetDatabase.IsValidFolder("Assets/Settings"))
             {
-                if (!AssetDatabase.IsValidFolder("Assets/Settings"))
-                {
-                    AssetDatabase.CreateFolder("Assets", "Settings");
-                }
-                
-                weaponConfig = ScriptableObject.CreateInstance<WeaponBase>();
-                var serializedWeapon = new SerializedObject(weaponConfig);
-                serializedWeapon.FindProperty("weaponName").stringValue = "The Foreman";
-                serializedWeapon.FindProperty("description").stringValue = "Brass-cased revolver. Six shots, devastating, slow reload.";
-                serializedWeapon.FindProperty("damage").floatValue = 40f;
-                serializedWeapon.FindProperty("fireRate").floatValue = 0.5f;
-                serializedWeapon.FindProperty("range").floatValue = 100f;
-                serializedWeapon.FindProperty("spread").floatValue = 0.02f;
-                serializedWeapon.FindProperty("magazineCapacity").intValue = 6;
-                serializedWeapon.FindProperty("reloadTime").floatValue = 2.0f;
-                serializedWeapon.ApplyModifiedProperties();
-                
-                AssetDatabase.CreateAsset(weaponConfig, "Assets/Settings/DefaultPistol.asset");
-                AssetDatabase.SaveAssets();
+                AssetDatabase.CreateFolder("Assets", "Settings");
             }
+            
+            WeaponBase weaponConfig = ScriptableObject.CreateInstance<WeaponBase>();
+            var serializedWeapon = new SerializedObject(weaponConfig);
+            serializedWeapon.FindProperty("weaponName").stringValue = "Telegraph Launcher";
+            serializedWeapon.FindProperty("description").stringValue = "Shoots arcing brass grenades that travel along a trajectory and explode.";
+            serializedWeapon.FindProperty("damage").floatValue = 50f;
+            serializedWeapon.FindProperty("fireRate").floatValue = 0.6f;
+            serializedWeapon.FindProperty("range").floatValue = 100f;
+            serializedWeapon.FindProperty("spread").floatValue = 0.01f;
+            serializedWeapon.FindProperty("magazineCapacity").intValue = 6;
+            serializedWeapon.FindProperty("reloadTime").floatValue = 2.0f;
+            
+            // Projectile trajectory settings
+            serializedWeapon.FindProperty("isProjectile").boolValue = true;
+            serializedWeapon.FindProperty("projectileSpeed").floatValue = 20.0f; // Slower travel speed to see the projectile fly
+            serializedWeapon.FindProperty("gravityScale").floatValue = 0.6f;    // Arcing gravity trajectory
+            serializedWeapon.ApplyModifiedProperties();
+            
+            AssetDatabase.CreateAsset(weaponConfig, "Assets/Settings/DefaultPistol.asset");
+            AssetDatabase.SaveAssets();
 
             // Create Weapon GameObject
             var weaponGo = new GameObject("ForemanRevolver");
@@ -135,6 +136,9 @@ namespace CyberBrass.Editor
                 target.transform.SetParent(targetRoot.transform);
                 target.transform.position = targetPositions[i];
                 target.transform.localScale = new Vector3(1, 2.5f, 1);
+
+                // Add Rigidbody to allow physical movement and explosion reactions
+                target.AddComponent<Rigidbody>();
                 
                 var targetRenderer = target.GetComponent<Renderer>();
                 if (targetRenderer != null)
