@@ -50,16 +50,20 @@ namespace CyberBrass.Player
             _characterController = GetComponent<CharacterController>();
 
             // Setup default input bindings inline so they are configured by default
-            if (moveAction == null || moveAction.bindings.Count == 0)
+            if (moveAction == null)
             {
                 moveAction = new InputAction("Move", binding: "<Gamepad>/leftStick");
-                // WASD Bindings
+            }
+            if (!HasBinding(moveAction, "<Keyboard>/w"))
+            {
                 moveAction.AddCompositeBinding("Dpad")
                     .With("Up", "<Keyboard>/w")
                     .With("Down", "<Keyboard>/s")
                     .With("Left", "<Keyboard>/a")
                     .With("Right", "<Keyboard>/d");
-                // Arrow Key Bindings
+            }
+            if (!HasBinding(moveAction, "<Keyboard>/upArrow"))
+            {
                 moveAction.AddCompositeBinding("Dpad")
                     .With("Up", "<Keyboard>/upArrow")
                     .With("Down", "<Keyboard>/downArrow")
@@ -67,31 +71,65 @@ namespace CyberBrass.Player
                     .With("Right", "<Keyboard>/rightArrow");
             }
 
-            if (lookAction == null || lookAction.bindings.Count == 0)
+            if (lookAction == null)
             {
                 lookAction = new InputAction("Look", binding: "<Gamepad>/rightStick");
+            }
+            if (!HasBinding(lookAction, "<Mouse>/delta"))
+            {
                 lookAction.AddBinding("<Mouse>/delta");
             }
 
-            if (jumpAction == null || jumpAction.bindings.Count == 0)
+            if (jumpAction == null)
             {
                 jumpAction = new InputAction("Jump", binding: "<Keyboard>/space");
+            }
+            if (!HasBinding(jumpAction, "<Gamepad>/buttonSouth"))
+            {
                 jumpAction.AddBinding("<Gamepad>/buttonSouth");
             }
 
-            if (fireAction == null || fireAction.bindings.Count == 0)
+            if (fireAction == null)
             {
                 fireAction = new InputAction("Fire", binding: "<Mouse>/leftButton");
-                fireAction.AddBinding("<Gamepad>/rightTrigger");
+            }
+            if (!HasBinding(fireAction, "<Keyboard>/leftCtrl"))
+            {
                 fireAction.AddBinding("<Keyboard>/leftCtrl");
+            }
+            if (!HasBinding(fireAction, "<Keyboard>/rightCtrl"))
+            {
                 fireAction.AddBinding("<Keyboard>/rightCtrl");
             }
+            if (!HasBinding(fireAction, "<Gamepad>/rightTrigger"))
+            {
+                fireAction.AddBinding("<Gamepad>/rightTrigger");
+            }
 
-            if (reloadAction == null || reloadAction.bindings.Count == 0)
+            if (reloadAction == null)
             {
                 reloadAction = new InputAction("Reload", binding: "<Keyboard>/r");
+            }
+            if (!HasBinding(reloadAction, "<Gamepad>/buttonWest"))
+            {
                 reloadAction.AddBinding("<Gamepad>/buttonWest");
             }
+        }
+
+        /// <summary>
+        /// Helper to check if an InputAction already has a specific binding path.
+        /// </summary>
+        private bool HasBinding(InputAction action, string path)
+        {
+            if (action == null) return false;
+            for (int i = 0; i < action.bindings.Count; i++)
+            {
+                if (action.bindings[i].path.Equals(path, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void OnEnable()
