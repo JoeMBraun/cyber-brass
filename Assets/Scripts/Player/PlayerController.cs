@@ -34,6 +34,11 @@ namespace CyberBrass.Player
         [SerializeField] private InputAction moveAction;
         [SerializeField] private InputAction lookAction;
         [SerializeField] private InputAction jumpAction;
+        [SerializeField] private InputAction fireAction;
+        [SerializeField] private InputAction reloadAction;
+
+        [Header("Active Weapon")]
+        [SerializeField] private CyberBrass.Weapons.WeaponInstance activeWeapon;
 
         private CharacterController _characterController;
         private Vector3 _velocity;
@@ -66,6 +71,18 @@ namespace CyberBrass.Player
                 jumpAction = new InputAction("Jump", binding: "<Keyboard>/space");
                 jumpAction.AddBinding("<Gamepad>/buttonSouth");
             }
+
+            if (fireAction == null || fireAction.bindings.Count == 0)
+            {
+                fireAction = new InputAction("Fire", binding: "<Mouse>/leftButton");
+                fireAction.AddBinding("<Gamepad>/rightTrigger");
+            }
+
+            if (reloadAction == null || reloadAction.bindings.Count == 0)
+            {
+                reloadAction = new InputAction("Reload", binding: "<Keyboard>/r");
+                reloadAction.AddBinding("<Gamepad>/buttonWest");
+            }
         }
 
         private void OnEnable()
@@ -73,6 +90,8 @@ namespace CyberBrass.Player
             moveAction.Enable();
             lookAction.Enable();
             jumpAction.Enable();
+            fireAction.Enable();
+            reloadAction.Enable();
         }
 
         private void OnDisable()
@@ -80,12 +99,42 @@ namespace CyberBrass.Player
             moveAction.Disable();
             lookAction.Disable();
             jumpAction.Disable();
+            fireAction.Disable();
+            reloadAction.Disable();
         }
 
         private void Update()
         {
             HandleLook();
             HandleMovement();
+            HandleShooting();
+        }
+
+        /// <summary>
+        /// Reads fire and reload inputs and directs them to the active weapon instance.
+        /// </summary>
+        private void HandleShooting()
+        {
+            if (activeWeapon == null)
+            {
+                activeWeapon = GetComponentInChildren<CyberBrass.Weapons.WeaponInstance>();
+            }
+
+            if (activeWeapon != null)
+            {
+                bool wantToFire = fireAction.ReadValue<float>() > 0.5f;
+                if (wantToFire)
+                {
+                    Vector3 origin = playerCamera != null ? playerCamera.position : transform.position + Vector3.up * 1.8f;
+                    Vector3 direction = playerCamera != null ? playerCamera.forward : transform.forward;
+                    activeWeapon.TryFire(origin, direction);
+                }
+
+                if (reloadAction.triggered)
+                {
+                    activeWeapon.StartReload();
+                }
+            }
         }
 
         /// <summary>
