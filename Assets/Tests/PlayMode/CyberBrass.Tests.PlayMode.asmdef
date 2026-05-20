@@ -6,7 +6,8 @@
         "UnityEditor.TestRunner",
         "CyberBrass.Runtime",
         "Unity.InputSystem",
-        "Unity.InputSystem.TestFramework"
+        "Unity.InputSystem.TestFramework",
+        "SQLite-net"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

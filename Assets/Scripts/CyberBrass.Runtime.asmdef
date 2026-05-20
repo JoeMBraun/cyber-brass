@@ -2,7 +2,8 @@
     "name": "CyberBrass.Runtime",
     "rootNamespace": "CyberBrass",
     "references": [
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "SQLite-net"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
