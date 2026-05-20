@@ -27,9 +27,9 @@ namespace CyberBrass.Tests
         /// Installs the keyboard and mouse mock devices and builds a simple physics testing arena
         /// containing a player, camera, and ground plane.
         /// </summary>
-        public override void SetUp()
+        public override void Setup()
         {
-            base.SetUp();
+            base.Setup();
 
             // Set up virtual input devices
             _keyboard = InputSystem.AddDevice<Keyboard>();
