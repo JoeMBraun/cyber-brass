@@ -53,11 +53,18 @@ namespace CyberBrass.Player
             if (moveAction == null || moveAction.bindings.Count == 0)
             {
                 moveAction = new InputAction("Move", binding: "<Gamepad>/leftStick");
+                // WASD Bindings
                 moveAction.AddCompositeBinding("Dpad")
                     .With("Up", "<Keyboard>/w")
                     .With("Down", "<Keyboard>/s")
                     .With("Left", "<Keyboard>/a")
                     .With("Right", "<Keyboard>/d");
+                // Arrow Key Bindings
+                moveAction.AddCompositeBinding("Dpad")
+                    .With("Up", "<Keyboard>/upArrow")
+                    .With("Down", "<Keyboard>/downArrow")
+                    .With("Left", "<Keyboard>/leftArrow")
+                    .With("Right", "<Keyboard>/rightArrow");
             }
 
             if (lookAction == null || lookAction.bindings.Count == 0)
@@ -76,6 +83,8 @@ namespace CyberBrass.Player
             {
                 fireAction = new InputAction("Fire", binding: "<Mouse>/leftButton");
                 fireAction.AddBinding("<Gamepad>/rightTrigger");
+                fireAction.AddBinding("<Keyboard>/leftCtrl");
+                fireAction.AddBinding("<Keyboard>/rightCtrl");
             }
 
             if (reloadAction == null || reloadAction.bindings.Count == 0)
