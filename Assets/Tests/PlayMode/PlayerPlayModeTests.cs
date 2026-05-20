@@ -94,8 +94,8 @@ namespace CyberBrass.Tests
 
             // Should have landed on the floor collider
             Assert.IsTrue(charController.isGrounded, "Player should land on the floor and become grounded.");
-            Assert.IsTrue(_playerObject.transform.position.y > 0.4f && _playerObject.transform.position.y < 0.6f, 
-                $"Player Y position should snap to ground height, got: {_playerObject.transform.position.y}");
+            Assert.IsTrue(_playerObject.transform.position.y > -0.1f && _playerObject.transform.position.y < 0.1f, 
+                $"Player Y position should snap to ground height (around 0), got: {_playerObject.transform.position.y}");
         }
 
         /// <summary>

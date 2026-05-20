@@ -82,6 +82,7 @@ namespace CyberBrass.Weapons
         [SerializeField] private int currentAmmo;
         private float _lastFireTime;
         private bool _isReloading;
+        private bool _isInitialized;
 
         public WeaponBase WeaponData => weaponData;
         public int CurrentAmmo => currentAmmo;
@@ -89,7 +90,7 @@ namespace CyberBrass.Weapons
 
         private void Start()
         {
-            if (weaponData != null)
+            if (weaponData != null && !_isInitialized)
             {
                 Initialize(weaponData);
             }
@@ -102,6 +103,7 @@ namespace CyberBrass.Weapons
         {
             weaponData = data;
             currentAmmo = data.MagazineCapacity;
+            _isInitialized = true;
             _isReloading = false;
             Debug.Log($"[WeaponInstance] {weaponData.WeaponName} initialized with {currentAmmo} rounds.");
         }
