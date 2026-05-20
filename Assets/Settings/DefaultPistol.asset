@@ -12,12 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39aa17f3aea4f6146b9c43254cf618f3, type: 3}
   m_Name: DefaultPistol
   m_EditorClassIdentifier: CyberBrass.Runtime::CyberBrass.Weapons.WeaponBase
-  weaponName: The Foreman
-  description: Brass-cased revolver. Six shots, devastating, slow reload.
-  damage: 40
-  fireRate: 0.5
+  weaponName: Telegraph Launcher
+  description: Shoots arcing brass grenades that travel along a trajectory and explode.
+  damage: 50
+  fireRate: 0.6
   range: 100
-  spread: 0.02
+  spread: 0.01
+  isProjectile: 1
+  projectilePrefab: {fileID: 0}
+  projectileSpeed: 20
+  gravityScale: 0.6
   magazineCapacity: 6
   ammoType: 0
   reloadTime: 2
